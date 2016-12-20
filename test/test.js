@@ -1,4 +1,5 @@
 var assert = require('chai').assert
+var Hotel = require('../hotel')
 var test = require('../index')
 
 describe("Hotel Constructor - Creating hotel objects", function() {
