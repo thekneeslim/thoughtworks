@@ -5,13 +5,25 @@ function Hotel(name, rating, weekdayRegular, weekdayRewards, weekendRegular, wee
   this.weekdayRewards = weekdayRewards;
   this.weekendRegular = weekendRegular;
   this.weekendRewards = weekendRewards;
-  this.price = 0;
-
+  this.price = function(userType, days) {
+    var pricing;
+    var weekdayRate;
+    var weekendRate;
+    if (userType == "Regular") {
+      weekdayRate = this.weekdayRegular
+      weekendRate = this.weekendRegular
+    } else {
+      weekdayRate = this.weekdayRewards
+      weekendRate = this.weekendRewards
+    }
+    pricing = (weekdayRate * days.weekdays) + (weekendRate * days.weekends)
+    return pricing
+  };
 }
 
 var lakewood = new Hotel("Lakewood", 3, 110, 80, 90, 80)
 var bridgewood = new Hotel ("Bridgewood", 4, 160, 110, 60, 50)
-var ridgewood = new Hotel ("Ridgewood", 5, 220, 110, 150, 40)
+var ridgewood = new Hotel ("Ridgewood", 5, 220, 100, 150, 40)
 
 var hotels = [lakewood, bridgewood, ridgewood]
 
@@ -19,25 +31,13 @@ function checkCheapest(details) {
   details = parseData(details)
   var days = checkDays(details.dates)
 
-  for (var i = 0; i< hotels.length; i++) {
-    if (details.user == "Regular") {
-      hotels[i].price = (hotels[i].weekdayRegular * days.weekdays) + (hotels[i].weekendRegular * days.weekends)
-    } else {
-      hotels[i].price = (hotels[i].weekdayRewards * days.weekdays) + (hotels[i].weekendRewards * days.weekends)
-    }
-  }
+  hotels.sort(function(a,b) {
+    return (a.price(details.user, days) == b.price(details.user, days))
+    ? (b.rating - a.rating)
+    : a.price(details.user, days) - b.price(details.user, days)
+  })
 
-  var cheapest = lakewood
-
-  for (var i = 0; i < hotels.length; i++) {
-    if (hotels[i].price < cheapest.price) {
-      cheapest = hotels[i]
-    } else if (hotels[i].price == cheapest.price && hotels[i].rating > cheapest.rating) {
-      cheapest = hotels[i]
-    }
-  }
-
-  return hotel[i].name
+  return hotels[0].name
 }
 
 function checkDays(data) {
@@ -62,7 +62,6 @@ function parseData(booking) {
     user: "",
     dates: []
   }
-
   parseBooking.user = booking.split(": ")[0]
   var tempDates = booking.split(": ")[1]
   tempDates = tempDates.split(", ")
@@ -77,10 +76,10 @@ function parseData(booking) {
   return parseBooking
 }
 
-// ======================================================================
 
 module.exports = {
   lakewood: lakewood,
   parseData: parseData,
-  checkDays: checkDays
+  checkDays: checkDays,
+  checkCheapest: checkCheapest
 }

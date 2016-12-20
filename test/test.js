@@ -53,15 +53,15 @@ describe("checkDays - updating weekdays & weekends", function() {
 
 describe("checkCheapest - check cheapest hotel", function() {
   it("should return Lakewood", function() {
-    assert.isObject(test.checkDays("Regular: 17Mar2009(mon), 17Mar2009(tues), 18Mar2009(wed)", "Lakewood"))
+    assert.equal(test.checkCheapest("Regular: 17Mar2009(mon), 17Mar2009(tues), 18Mar2009(wed)"), "Lakewood")
   })
 
   it("should return Bridgewood", function() {
-    assert.isObject(test.checkDays("Regular: 20Mar2009(fri). 21Mar2009(sat), 22Mar2009(sun)", "Bridgewood"))
+    assert.equal(test.checkCheapest("Regular: 20Mar2009(fri), 21Mar2009(sat), 22Mar2009(sun)"), "Bridgewood")
   })
 
   it("should return Ridgewood", function() {
-    assert.isObject(test.checkDays("Rewards: 26Mar2009(thur), 27Mar2009(fri), 28Mar2009(sat)", "Ridgewood"))
+    assert.equal(test.checkCheapest("Rewards: 26Mar2009(thur), 27Mar2009(fri), 28Mar2009(sat)"), "Ridgewood")
   })
 })
 
